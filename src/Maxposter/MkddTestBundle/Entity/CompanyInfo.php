@@ -13,6 +13,14 @@ class CompanyInfo
 {
     /**
      * @var integer
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var integer
      * @Orm\OneToOne(targetEntity="Company", inversedBy="info")
      */
     private $company;
