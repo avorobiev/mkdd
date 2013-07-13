@@ -86,4 +86,13 @@ class Department implements \Maxposter\MkddBundle\MkddInterface
     {
         return $this->dealer;
     }
+
+
+    public static function getMkddFields()
+    {
+        return array(
+            'id',
+            'dealer',
+        );
+    }
 }
