@@ -53,8 +53,9 @@ class DacSqlFilter extends SQLFilter
                         implode('\', \'', (array) $filters[$assocMapping['targetEntity']])
                     );
                 }
-            } elseif (($targetEntity->getSingleIdentifierColumnName() == $dacField) && array_key_exists($targetEntity->getName(), $filters) && !empty($filters[$targetEntity->getName()])) {
-                // Фильтруем по самому себе, т.е. PK
+            }
+            // Фильтруем по самому себе, т.е. PK
+            elseif (($targetEntity->getSingleIdentifierColumnName() == $dacField) && array_key_exists($targetEntity->getName(), $filters) && !empty($filters[$targetEntity->getName()])) {
                 $conditions[] = sprintf(
                     '%s.%s IN (\'%s\')',
                     $targetTableAlias,
@@ -68,9 +69,6 @@ class DacSqlFilter extends SQLFilter
         if ($conditions) {
             $result = sprintf('((%s))', implode(') AND (', $conditions));
         }
-
-        // FIXME: проверяли что генерировали
-        // var_dump($result);
 
         return $result;
     }
