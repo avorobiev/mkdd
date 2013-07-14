@@ -10,7 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @ORM\Entity()
  * @ORM\Table(name="test_mkdd_dealer")
  */
-class Dealer implements \Maxposter\MkddBundle\Entity\MkddInterface
+class Dealer
 {
     /**
      * @var integer
