@@ -42,27 +42,31 @@ class DacSqlFilter extends SQLFilter
         $dacFields = $targetEntity->getReflectionClass()->getMethod('getDacFields')->invoke(null);
         $conditions = array();
         foreach ($dacFields as $dacField) {
+            $filteredFieldName = false;
             // Фильтр по FK
             if ($targetEntity->hasAssociation($dacField)) {
+                $filteredFieldName = $targetEntity->getSingleAssociationJoinColumnName($dacField);
                 $assocMapping = $targetEntity->getAssociationMapping($dacField);
-                if (array_key_exists($assocMapping['targetEntity'], $filters) && !empty($filters[$assocMapping['targetEntity']])) {
-                    $conditions[] = sprintf(
-                        '%s.%s IN (\'%s\')',
-                        $targetTableAlias,
-                        $targetEntity->getSingleAssociationJoinColumnName($dacField),
-                        implode('\', \'', (array) $filters[$assocMapping['targetEntity']])
-                    );
-                }
+                $dacSettingsName = $assocMapping['targetEntity'];
+            } // Фильтруем по самому себе, т.е. PK
+            else if (  ($targetEntity->getSingleIdentifierColumnName() == $dacField)
+                    && array_key_exists($targetEntity->getName(), $filters)
+                    && !empty($filters[$targetEntity->getName()])
+            ) {
+                $filteredFieldName = $targetEntity->getSingleIdentifierColumnName();
+                $dacSettingsName = $targetEntity->getName();
             }
-            // Фильтруем по самому себе, т.е. PK
-            elseif (($targetEntity->getSingleIdentifierColumnName() == $dacField) && array_key_exists($targetEntity->getName(), $filters) && !empty($filters[$targetEntity->getName()])) {
+
+            if (false !== $filteredFieldName) {
                 $conditions[] = sprintf(
                     '%s.%s IN (\'%s\')',
                     $targetTableAlias,
-                    $targetEntity->getSingleIdentifierColumnName(),
-                    implode('\', \'', (array) $filters[$targetEntity->getName()])
+                    $filteredFieldName,
+                    implode('\', \'', (array) $filters[$dacSettingsName])
                 );
             }
+
+
         }
 
         $result = '';
