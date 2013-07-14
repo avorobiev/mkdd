@@ -7,12 +7,6 @@ use Doctrine\ORM\Query\Filter\SQLFilter;
 
 
 /**
- * TODO:
- *      Фильтр можно добавить без конфигурации в app/config.yml через
- *      \Doctrine\Orm\Configuration::addFilter('name', $filter);
- * @see http://docs.doctrine-project.org/en/latest/reference/filters.html#configuration
- *
- *
  * @package Maxposter\DacBundle\SqlFilter
  */
 class DacSqlFilter extends SQLFilter
