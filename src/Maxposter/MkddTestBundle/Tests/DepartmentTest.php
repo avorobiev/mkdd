@@ -5,6 +5,7 @@ class DepartmentTest extends AppTestCase
 {
     public function testSelect_UserWithoutDepartments()
     {
+        $this->markTestSkipped('Не реализована инициализация МКДД');
         $department1 = $this->helper->makeDepartment();
         $department2 = $this->helper->makeDepartment();
 
