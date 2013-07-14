@@ -56,8 +56,8 @@ doctrine:
         auto_generate_proxy_classes: %kernel.debug%
         auto_mapping: true
         filters:
-            mkdd_filter:
-                class:                \Maxposter\MkddBundle\SqlFilter\Mkdd
+            dac_filter:
+                class:                \Maxposter\DacBundle\SqlFilter\DacSqlFilter
                 enabled:              true
 
 # Swiftmailer Configuration

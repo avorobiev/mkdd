@@ -16,14 +16,14 @@ class AppKernel extends Kernel
             new Symfony\Bundle\AsseticBundle\AsseticBundle(),
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
-            new Maxposter\MkddBundle\MaxposterMkddBundle(),
+            new Maxposter\DacBundle\MaxposterDacBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
             $bundles[] = new Sensio\Bundle\DistributionBundle\SensioDistributionBundle();
             $bundles[] = new Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
-            $bundles[] = new Maxposter\MkddTestBundle\MaxposterMkddTestBundle();
+            $bundles[] = new Maxposter\DacTestBundle\MaxposterDacTestBundle();
         }
 
         return $bundles;
