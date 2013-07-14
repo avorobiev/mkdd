@@ -51,13 +51,12 @@ class DacSqlFilter extends SQLFilter
             } // Фильтруем по самому себе, т.е. PK
             else if (  ($targetEntity->getSingleIdentifierColumnName() == $dacField)
                     && array_key_exists($targetEntity->getName(), $filters)
-                    && !empty($filters[$targetEntity->getName()])
             ) {
                 $filteredFieldName = $targetEntity->getSingleIdentifierColumnName();
                 $dacSettingsName = $targetEntity->getName();
             }
 
-            if (false !== $filteredFieldName) {
+            if ((false !== $filteredFieldName) && (isset($filters[$dacSettingsName]))) {
                 $conditions[] = sprintf(
                     '%s.%s IN (\'%s\')',
                     $targetTableAlias,
