@@ -13,7 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @ORM\Entity()
  * @ORM\Table(name="test_mkdd_business")
  */
-class Business implements \Maxposter\MkddBundle\MkddInterface
+class Business implements \Maxposter\MkddBundle\Entity\MkddInterface
 {
     /**
      * @var integer

@@ -24,7 +24,7 @@ class MkddTest extends WebTestCase
         /** @var $filters \Doctrine\ORM\Query\FilterCollection */
         $filter = $em->getFilters()->getFilter('mkdd_filter');
 
-        $mkddEntity = $this->getMock('\\Maxposter\\MkddBundle\\MkddInterface');
+        $mkddEntity = $this->getMock('\\Maxposter\\MkddBundle\\Entity\\MkddInterface');
         $mkddEntity::staticExpects($this->atLeastOnce())
             ->method('getMkddFields')
             ->will($this->returnValue(array('id', 'foreign_id')))

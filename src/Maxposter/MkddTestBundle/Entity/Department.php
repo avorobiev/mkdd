@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity()
  * @ORM\Table(name="test_mkdd_department")
  */
-class Department implements \Maxposter\MkddBundle\MkddInterface
+class Department implements \Maxposter\MkddBundle\Entity\MkddInterface
 {
     /**
      * @var integer

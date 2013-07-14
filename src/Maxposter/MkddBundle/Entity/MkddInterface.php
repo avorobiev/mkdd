@@ -1,5 +1,5 @@
 <?php
-namespace Maxposter\MkddBundle;
+namespace Maxposter\MkddBundle\Entity;
 
 interface MkddInterface
 {

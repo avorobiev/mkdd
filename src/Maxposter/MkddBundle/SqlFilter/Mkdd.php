@@ -39,7 +39,7 @@ class Mkdd extends SQLFilter
      */
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
     {
-        if (!$targetEntity->reflClass->implementsInterface('\\Maxposter\\MkddBundle\\MkddInterface')) {
+        if (!$targetEntity->reflClass->implementsInterface('\\Maxposter\\MkddBundle\\Entity\\MkddInterface')) {
             return '';
         }
         $filters = $this->getFilters();
