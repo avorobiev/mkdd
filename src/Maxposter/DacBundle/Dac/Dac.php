@@ -14,7 +14,10 @@ class Dac
 
     private
         /* @var \Doctrine\Bundle\DoctrineBundle\Registry */
-        $doctrine
+        $doctrine,
+
+        /** @var \Maxposter\DacBundle\Dac\Settings */
+        $settings
     ;
 
 
@@ -35,7 +38,7 @@ class Dac
         $filters = $this->doctrine->getManager()->getFilters(); /** @var $filters \Doctrine\ORM\Query\FilterCollection */
         $filters->enable(static::SQL_FILTER_NAME);
         $filter = $filters->getFilter(static::SQL_FILTER_NAME); /** @var \Doctrine\ORM\Query\Filter\SQLFilter */
-        $filter->setFilterMap($this->getSettings());
+        $filter->setDacSettings($this->getSettings());
     }
 
     public function disable()
@@ -44,9 +47,16 @@ class Dac
         $this->doctrine->getManager()->getFilters()->disable(static::SQL_FILTER_NAME);
     }
 
+    public function setSettings(Settings $settings)
+    {
+        $this->settings = $settings;
+    }
+
     protected function getSettings()
     {
-        // todo: параметры должны браться из БД и сохраняться в сессии пользователя
-        return array();
+        if (is_null($this->settings)) {
+            $this->settings = new Settings();
+        }
+        return $this->settings;
     }
 }

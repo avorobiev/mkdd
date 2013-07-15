@@ -9,18 +9,21 @@ use \Doctrine\DBAL\Connection;
  */
 class SqlFilter extends \Doctrine\ORM\Query\Filter\SQLFilter
 {
-    private $filters = array();
+    /** @var Settings */
+    private $dacSettings;
 
-    public function setFilterMap(array $filters = array())
+    public function setDacSettings(Settings $dacSettings)
     {
-        $this->filters = $filters;
+        $this->dacSettings = $dacSettings;
     }
 
-    private function getFilters()
+    private function getDacSettings()
     {
-        return $this->filters;
+        if (is_null($this->dacSettings)) {
+            throw new Exception('Ошибка в инициализации SQL-фильтра: не заданы параметры фильтрации');
+        }
+        return $this->dacSettings;
     }
-
 
     /**
      * Gets the SQL query part to add to a query.
@@ -34,7 +37,7 @@ class SqlFilter extends \Doctrine\ORM\Query\Filter\SQLFilter
         if (!$targetEntity->reflClass->implementsInterface('\\Maxposter\\DacBundle\\Entity\\DacInterface')) {
             return '';
         }
-        $filters = $this->getFilters();
+        $dacSettings = $this->getDacSettings();
         //$class = $targetEntity->getName();
         //$dacFields = $class::getDacFields();
         $dacFields = $targetEntity->getReflectionClass()->getMethod('getDacFields')->invoke(null);
@@ -47,23 +50,19 @@ class SqlFilter extends \Doctrine\ORM\Query\Filter\SQLFilter
                 $assocMapping = $targetEntity->getAssociationMapping($dacField);
                 $dacSettingsName = $assocMapping['targetEntity'];
             } // Фильтруем по самому себе, т.е. PK
-            else if (  ($targetEntity->getSingleIdentifierColumnName() == $dacField)
-                    && array_key_exists($targetEntity->getName(), $filters)
-            ) {
+            else if ($targetEntity->getSingleIdentifierColumnName() == $dacField) {
                 $filteredFieldName = $targetEntity->getSingleIdentifierColumnName();
                 $dacSettingsName = $targetEntity->getName();
             }
 
-            if ((false !== $filteredFieldName) && (isset($filters[$dacSettingsName]))) {
+            if ((false !== $filteredFieldName) && !is_null($dacSettings->get($dacSettingsName))) {
                 $conditions[] = sprintf(
                     '%s.%s IN (\'%s\')',
                     $targetTableAlias,
                     $filteredFieldName,
-                    implode('\', \'', (array) $filters[$dacSettingsName])
+                    implode('\', \'', $dacSettings->get($dacSettingsName))
                 );
             }
-
-
         }
 
         $result = '';

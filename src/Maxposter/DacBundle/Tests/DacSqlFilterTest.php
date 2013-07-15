@@ -5,6 +5,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use \Symfony\Bundle\FrameworkBundle\Client;
 use \Doctrine\Orm\EntityManager;
 use \Maxposter\DacBundle\Dac\Dac;
+use \Maxposter\DacBundle\Dac\Settings;
 
 class DacSqlFilterTest extends WebTestCase
 {
@@ -20,13 +21,11 @@ class DacSqlFilterTest extends WebTestCase
             ->will($this->returnValue(array('id', 'foreign_id')))
         ;
 
-        $dac = $this->getMock('\\Maxposter\\DacBundle\\Dac\\Dac', array('getSettings'), array($doctrine));
-        $dac->expects($this->any())
-            ->method('getSettings')
-            ->will($this->returnValue(array(
-                get_class($dacEntity) => array(24, 36)
-            )))
-        ;
+        $dacSettings = new Settings();
+        $dacSettings->set(get_class($dacEntity), array(24, 36));
+
+        $dac = new Dac($doctrine);
+        $dac->setSettings($dacSettings);
         $dac->enable();
 
         $meta = new \Doctrine\ORM\Mapping\ClassMetadata(get_class($dacEntity), $em->getConfiguration()->getNamingStrategy());
