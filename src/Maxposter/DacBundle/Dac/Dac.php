@@ -24,7 +24,7 @@ class Dac
 
         // Регистрация sql-фильтра, чтобы в коде можно было ссылаться на его имя
         $this->doctrine->getManager()->getConfiguration()->addFilter(
-            static::SQL_FILTER_NAME, 'Maxposter\\DacBundle\\SqlFilter\\DacSqlFilter'
+            static::SQL_FILTER_NAME, 'Maxposter\\DacBundle\\Dac\\SqlFilter'
         );
     }
 
@@ -35,7 +35,7 @@ class Dac
         $filters = $this->doctrine->getManager()->getFilters(); /** @var $filters \Doctrine\ORM\Query\FilterCollection */
         $filters->enable(static::SQL_FILTER_NAME);
         $filter = $filters->getFilter(static::SQL_FILTER_NAME); /** @var \Doctrine\ORM\Query\Filter\SQLFilter */
-        $filter->setFilterMap($this->getDacSettings());
+        $filter->setFilterMap($this->getSettings());
     }
 
     public function disable()
@@ -44,7 +44,7 @@ class Dac
         $this->doctrine->getManager()->getFilters()->disable(static::SQL_FILTER_NAME);
     }
 
-    protected function getDacSettings()
+    protected function getSettings()
     {
         // todo: параметры должны браться из БД и сохраняться в сессии пользователя
         return array();

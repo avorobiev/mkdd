@@ -1,15 +1,13 @@
 <?php
-namespace Maxposter\DacBundle\SqlFilter;
+namespace Maxposter\DacBundle\Dac;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\DBAL\Connection;
-use Doctrine\ORM\Query\Filter\SQLFilter;
-
+use \Doctrine\ORM\Mapping\ClassMetadata;
+use \Doctrine\DBAL\Connection;
 
 /**
  * @package Maxposter\DacBundle\SqlFilter
  */
-class DacSqlFilter extends SQLFilter
+class SqlFilter extends \Doctrine\ORM\Query\Filter\SQLFilter
 {
     private $filters = array();
 

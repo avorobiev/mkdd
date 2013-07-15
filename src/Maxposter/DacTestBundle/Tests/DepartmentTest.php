@@ -8,9 +8,9 @@ class DepartmentTest extends AppTestCase
         $department1 = $this->helper->makeDepartment();
         $department2 = $this->helper->makeDepartment();
 
-        $dac = $this->getMock('\\Maxposter\\DacBundle\\Dac\\Dac', array('getDacSettings'), array($this->container->get('doctrine')));
+        $dac = $this->getMock('\\Maxposter\\DacBundle\\Dac\\Dac', array('getSettings'), array($this->container->get('doctrine')));
         $dac->expects($this->any())
-            ->method('getDacSettings')
+            ->method('getSettings')
             ->will($this->returnValue(array(
                 'Maxposter\\DacTestBundle\\Entity\\Department' => '',
             )))
@@ -28,9 +28,9 @@ class DepartmentTest extends AppTestCase
         $department1 = $this->helper->makeDepartment();
         $department2 = $this->helper->makeDepartment();
 
-        $dac = $this->getMock('\\Maxposter\\DacBundle\\Dac\\Dac', array('getDacSettings'), array($this->container->get('doctrine')));
+        $dac = $this->getMock('\\Maxposter\\DacBundle\\Dac\\Dac', array('getSettings'), array($this->container->get('doctrine')));
         $dac->expects($this->any())
-            ->method('getDacSettings')
+            ->method('getSettings')
             ->will($this->returnValue(array(
                 'Maxposter\\DacTestBundle\\Entity\\Department' => array($department1->getId()),
             )))
@@ -51,9 +51,9 @@ class DepartmentTest extends AppTestCase
         $department3 = $this->helper->makeDepartment();
         $departmentIds = array($department1->getId(), $department3->getId());
 
-        $dac = $this->getMock('\\Maxposter\\DacBundle\\Dac\\Dac', array('getDacSettings'), array($this->container->get('doctrine')));
+        $dac = $this->getMock('\\Maxposter\\DacBundle\\Dac\\Dac', array('getSettings'), array($this->container->get('doctrine')));
         $dac->expects($this->any())
-            ->method('getDacSettings')
+            ->method('getSettings')
             ->will($this->returnValue(array(
                 'Maxposter\\DacTestBundle\\Entity\\Department' => $departmentIds
             )))
@@ -74,9 +74,9 @@ class DepartmentTest extends AppTestCase
         $department2 = $this->helper->makeDepartment();
         $department3 = $this->helper->makeDepartment();
 
-        $dac = $this->getMock('\\Maxposter\\DacBundle\\Dac\\Dac', array('getDacSettings'), array($this->container->get('doctrine')));
+        $dac = $this->getMock('\\Maxposter\\DacBundle\\Dac\\Dac', array('getSettings'), array($this->container->get('doctrine')));
         $dac->expects($this->any())
-            ->method('getDacSettings')
+            ->method('getSettings')
             ->will($this->returnValue(array(
                 'Maxposter\\DacTestBundle\\Entity\\Dealer' => '',
                 'Maxposter\\DacTestBundle\\Entity\\Department' => array(

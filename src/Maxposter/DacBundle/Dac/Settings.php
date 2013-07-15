@@ -2,7 +2,7 @@
 
 namespace Maxposter\DacBundle\Dac;
 
-class DacSettings
+class Settings
 {
     protected $settings = array();
 
@@ -20,7 +20,7 @@ class DacSettings
      * @param $entityName   Полное название entity с неймспейсом, но без ведущего \
      * @param $ids          Допустимые идентификаторы
      */
-    public function setSetting($entityName, array $ids)
+    public function set($entityName, array $ids)
     {
         $this->settings[$this->clearEntityName($entityName)] = $ids;
     }
@@ -31,7 +31,7 @@ class DacSettings
      * @param $entityName   Полное название entity с неймспейсом, но без ведущего \
      * @return mixed        Массив идентификаторов, либо null если по entity нет фильтрации
      */
-    public function getSetting($entityName)
+    public function get($entityName)
     {
         $entityName = $this->clearEntityName($entityName);
 
@@ -57,7 +57,7 @@ class DacSettings
     {
         $this->reset();
         foreach ($settings as $entityName => $ids) {
-            $this->setSetting($entityName, $ids);
+            $this->set($entityName, $ids);
         }
     }
 

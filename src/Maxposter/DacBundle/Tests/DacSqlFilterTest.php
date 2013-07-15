@@ -20,9 +20,9 @@ class DacSqlFilterTest extends WebTestCase
             ->will($this->returnValue(array('id', 'foreign_id')))
         ;
 
-        $dac = $this->getMock('\\Maxposter\\DacBundle\\Dac\\Dac', array('getDacSettings'), array($doctrine));
+        $dac = $this->getMock('\\Maxposter\\DacBundle\\Dac\\Dac', array('getSettings'), array($doctrine));
         $dac->expects($this->any())
-            ->method('getDacSettings')
+            ->method('getSettings')
             ->will($this->returnValue(array(
                 get_class($dacEntity) => array(24, 36)
             )))
