@@ -7,7 +7,7 @@ use \Doctrine\Orm\EntityManager;
 use \Maxposter\DacBundle\Dac\Dac;
 use \Maxposter\DacBundle\Dac\Settings;
 
-class DacSqlFilterTest extends WebTestCase
+class SqlFilterTest extends WebTestCase
 {
     public function testAddFilterConstraint()
     {
