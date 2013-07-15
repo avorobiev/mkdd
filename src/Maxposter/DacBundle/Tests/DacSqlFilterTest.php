@@ -1,5 +1,5 @@
 <?php
-namespace Maxposter\DacBundle\Tests\SqlFilter;
+namespace Maxposter\DacBundle\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use \Symfony\Bundle\FrameworkBundle\Client;
