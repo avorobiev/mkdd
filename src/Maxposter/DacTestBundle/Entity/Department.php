@@ -2,6 +2,7 @@
 namespace Maxposter\DacTestBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Maxposter\DacBundle\Mapping as DAC;
 
 /**
  * Подразделение автосалона
@@ -16,6 +17,7 @@ class Department implements \Maxposter\DacBundle\Entity\DacInterface
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @DAC\Filter
      */
     private $id;
 
@@ -28,6 +30,7 @@ class Department implements \Maxposter\DacBundle\Entity\DacInterface
     /**
      * @var Dealer
      * @ORM\ManyToOne(targetEntity="Dealer")
+     * @DAC\Filter(targetEntity="Dealer")
      */
     private $dealer;
 
