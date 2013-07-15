@@ -40,43 +40,107 @@ class EntityHelper
     }
 
 
-    private function fromArray(array $props, $class)
+    /**
+     * Создаёт объект из массива параметров
+     *
+     * @param  array   $props
+     * @param  string  $entityName
+     * @return object
+     */
+    private function fromArray(array $props, $entityName)
     {
-        $class = static::NS . $class;
+        $entityName = static::NS . $entityName;
         /** @var $meta \Doctrine\ORM\Mapping\ClassMetadata */
-        $meta = $this->em->getClassMetadata($class);
-        $ob = new $class();
+        $meta = $this->em->getClassMetadata($entityName);
+        //$ob = new $entityName();
+        $ob = $meta->newInstance();
 
         foreach ($meta->getFieldNames() as $field) {
-            if (array_key_exists($field, $props)) {
-                $method = sprintf('set%s', ucfirst($field));
-                $ob->$method($props[$field]);
+            if (array_key_exists($field, $props) or array_key_exists($meta->getColumnName($field), $props)) {
+                // TODO: check & force argument types
+                // $type = $meta->getTypeOfField($field);
+                $key = array_key_exists($field, $props) ? $field : $meta->getColumnName($field);
+                $meta->getReflectionProperty($field)->setValue($ob, $props[$key]);
+                unset($props[$key]);
             }
         }
 
-        foreach ($meta->getAssociationMappings() as $field => $mapping) {
-            if (
-            $coll = array_reduce(
-                $props,
-                function (&$res, $item) use ($mapping) {
-                    if ($item instanceof $mapping['targetEntity']) {
-                        if (is_null($res)) {
-                            $res = array();
-                        }
-                        $res[] = $item;
-                    }
+        // Очищаем от всего лишнего и индексируем
+        $index = array();
+        foreach ($props as $k => $v) {
+            if (!is_object($v) && !is_null($v)) {
+                unset($props[$k]);
+            } elseif (is_object($v)) {
+                if (!array_key_exists(get_class($v), $index)) {
+                    $index[get_class($v)] = array();
+                }
+                $index[get_class($v)][] = $k;
+            }
+        }
 
-                    return $res;
-                })
-            ) {
-                if ($mapping['type'] & \Doctrine\ORM\Mapping\ClassMetadataInfo::TO_ONE) {
-                    $method = sprintf('set%s', ucfirst($field));
-                    $ob->$method($coll['0']);
-                } elseif ($mapping['type'] & \Doctrine\ORM\Mapping\ClassMetadataInfo::TO_MANY) {
-                    $method = sprintf('add%s', ucfirst($field));
-                    foreach ($coll as $relOb) {
-                        $ob->$method($relOb);
+        // если связь -к-одному и такая связь одна, то ключ в массиве props не интересует
+        // если связь -ко-много и связь одна, ключ не интересует, но значением может быть
+        //                                    не одна сущность а массив с несколькими
+        // если несколько связей к одной сущности то работаем только по ключу props
+        // если связь nullable = true то при отсутствии значения не проставляем
+        // если связь -ко-много, то через рефлексию получаем коллекцию и сеттим туда
+        foreach ($meta->getAssociationMappings() as $field => $mapping) {
+            $propertyKey = ucfirst($field);
+            // Несколько связей к одной сущности
+            // например. сам-к-себе :)
+            if (1 < count($meta->getAssociationsByTargetClass($mapping['targetEntity']))) {
+                if (
+                    array_key_exists($propertyKey, $props)
+                    && (
+                        ($props[$propertyKey] instanceof $mapping['targetEntity'])
+                        or (is_array($props[$propertyKey]))
+                    )
+                ) {
+                    if ($mapping['type'] & \Doctrine\ORM\Mapping\ClassMetadataInfo::TO_MANY) {
+                        /** @var $coll \Doctrine\Common\Collections\Collection */
+                        $coll = $meta->getReflectionProperty($field)->getValue($ob);
+                        if (!is_array($props[$propertyKey])) {
+                            $props[$propertyKey] = array($props[$propertyKey]);
+                        }
+                        foreach ($props[$propertyKey] as $value) {
+                            $coll->add($value);
+                        }
+                    } elseif ($mapping['type'] & \Doctrine\ORM\Mapping\ClassMetadataInfo::TO_ONE) {
+                        $meta->getReflectionProperty($field)->setValue($ob, $props[$propertyKey]);
                     }
+                } elseif (
+                    ($mapping['type'] & \Doctrine\ORM\Mapping\ClassMetadataInfo::TO_ONE)
+                    && (false === $mapping['joinColumns']['0']['nullable'])
+                ) {
+                    $meta->getReflectionProperty($field)->setValue($ob, $this->getDefault($mapping['targetEntity']));
+                }
+                // Добавляем любые подходящие
+            } else {
+                if (
+                    ($mapping['type'] & \Doctrine\ORM\Mapping\ClassMetadataInfo::TO_MANY)
+                    && array_key_exists($mapping['targetEntity'], $index)
+                ) {
+                    /** @var $coll \Doctrine\Common\Collections\Collection */
+                    $coll = $meta->getReflectionProperty($field)->getValue($ob);
+                    foreach ($index[$mapping['targetEntity']] as $propsKey) {
+                        if (!is_array($props[$propsKey])) {
+                            $props[$propsKey] = array($props[$propsKey]);
+                        }
+                        foreach ($props[$propsKey] as $value) {
+                            $coll->add($value);
+                        }
+                    }
+                } elseif (
+                    ($mapping['type'] & \Doctrine\ORM\Mapping\ClassMetadataInfo::TO_ONE)
+                    && array_key_exists($mapping['targetEntity'], $index)
+                ) {
+                    $meta->getReflectionProperty($field)->setValue($ob, $props[$index[$mapping['targetEntity']]['0']]);
+                    // Значение по умолчанию
+                } elseif (
+                    ($mapping['type'] & \Doctrine\ORM\Mapping\ClassMetadataInfo::TO_ONE)
+                    && (false === $mapping['joinColumns']['0']['nullable'])
+                ) {
+                    $meta->getReflectionProperty($field)->setValue($ob, $this->getDefault($mapping['targetEntity']));
                 }
             }
         }
