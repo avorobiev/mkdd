@@ -4,7 +4,12 @@ namespace Maxposter\DacBundle\Dac;
 
 class Settings
 {
-    protected $settings = array();
+    protected $settings;
+
+    public function __construct()
+    {
+        $this->reset();
+    }
 
     /**
      * Обнуление ограничений

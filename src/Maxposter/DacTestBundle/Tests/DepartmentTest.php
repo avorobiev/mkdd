@@ -2,7 +2,7 @@
 namespace Maxposter\DacTestBundle\Tests;
 
 use \Maxposter\DacBundle\Dac\Dac;
-use \Maxposter\DacBundle\Dac\Settings;
+use \Maxposter\DacTestBundle\Dac\Settings;
 
 class DepartmentTest extends AppTestCase
 {
