@@ -10,27 +10,35 @@ class Annotations
     private $em;
     /** @var \Maxposter\DacBundle\Mapping\Driver\Annotations  */
     private $driver;
+    /** @var string  */
+    private $cacheDir;
 
     /** @var array */
     private $map;
 
     /**
-     * @param EntityManager $em
-     * @param Driver $driver
+     * @param  EntityManager $em
+     * @param  Driver        $driver
+     * @param  string        $cacheDir
      */
-    public function __construct(EntityManager $em, Driver $driver)
+    public function __construct(EntityManager $em, Driver $driver, $cacheDir)
     {
         $this->em     = $em;
         $this->driver = $driver;
+        $this->cacheDir = $cacheDir;
     }
 
 
     /**
+     * Загрузить в карту
+     *
      * @return array
      */
     private function load()
     {
-        if (!$this->map) {
+        if (!$this->map && (null !== $this->cacheDir) && is_file($filePath = sprintf('%s/max_dac.annotations.cache', $this->cacheDir))) {
+            $this->map = (array) unserialize(file_get_contents($filePath));
+        } elseif (!$this->map) {
             $this->map = array();
             foreach ($this->em->getConfiguration()->getMetadataDriverImpl()->getAllClassNames() as $className) {
                 $this->map[$className] = $this->driver->getAnnotatedColumns($className);
@@ -38,6 +46,15 @@ class Annotations
         }
 
         return $this->map;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getAnnotationsMap()
+    {
+        return $this->load();
     }
 
 
