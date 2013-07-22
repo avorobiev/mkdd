@@ -24,7 +24,10 @@ class AnnotationsTest extends AppTestCase
         $ann = $this->container->get('max_dac.annotations');
 
         $this->assertEquals(
-            array(),
+            array(
+                'id' => 'Maxposter\DacTestBundle\Entity\Department',
+                'dealer' => 'Maxposter\DacTestBundle\Entity\Dealer'
+            ),
             $ann->getDacFields('Maxposter\\DacTestBundle\\Entity\\Department')
         );
     }
