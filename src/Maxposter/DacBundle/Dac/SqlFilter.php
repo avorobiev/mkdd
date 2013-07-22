@@ -67,7 +67,7 @@ class SqlFilter extends \Doctrine\ORM\Query\Filter\SQLFilter
 
         $result = '';
         if ($conditions) {
-            $result = sprintf('((%s))', implode(') AND (', $conditions));
+            $result = sprintf('((%s))', implode(') OR (', $conditions));
         }
 
         return $result;

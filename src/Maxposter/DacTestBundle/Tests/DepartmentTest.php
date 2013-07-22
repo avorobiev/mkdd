@@ -2,7 +2,7 @@
 namespace Maxposter\DacTestBundle\Tests;
 
 use \Maxposter\DacBundle\Dac\Dac;
-use \Maxposter\DacBundle\Dac\Settings;
+use \Maxposter\DacTestBundle\Dac\Settings;
 
 class DepartmentTest extends AppTestCase
 {
@@ -87,6 +87,6 @@ class DepartmentTest extends AppTestCase
         $res = $this->em->createQuery('SELECT d FROM MaxposterDacTestBundle:Department d')->getResult();
 
         $this->assertInternalType('array', $res);
-        $this->assertEquals(0, count($res), 'Все записи срезаны фильтром по Dealer');
+        $this->assertEquals(2, count($res), 'Отобраны 2 записи с фильтром по Department, фильтр по Dealer ничего не добавил');
     }
 }
