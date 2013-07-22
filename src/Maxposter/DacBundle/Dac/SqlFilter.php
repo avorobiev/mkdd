@@ -3,18 +3,25 @@ namespace Maxposter\DacBundle\Dac;
 
 use \Doctrine\ORM\Mapping\ClassMetadata;
 use \Doctrine\DBAL\Connection;
+use Maxposter\DacBundle\Annotations\Mapping\Service\Annotations;
 
 /**
  * @package Maxposter\DacBundle\SqlFilter
  */
 class SqlFilter extends \Doctrine\ORM\Query\Filter\SQLFilter
 {
-    /** @var Settings */
-    private $dacSettings;
 
-    public function setDacSettings(Settings $dacSettings)
+    private
+        /** @var Settings */
+        $dacSettings,
+        
+        /** @var \Maxposter\DacBundle\Annotations\Mapping\Service\Annotations */
+        $annotations;
+
+    public function setDacSettings(Settings $dacSettings, Annotations $annotations)
     {
         $this->dacSettings = $dacSettings;
+        $this->annotations = $annotations;
     }
 
     private function getDacSettings()
@@ -34,9 +41,10 @@ class SqlFilter extends \Doctrine\ORM\Query\Filter\SQLFilter
      */
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
     {
-        if (!$targetEntity->reflClass->implementsInterface('\\Maxposter\\DacBundle\\Entity\\DacInterface')) {
+        if (!$this->annotations->hasDacFields($targetEntity->getReflectionClass()->getName())){
             return '';
         }
+
         $dacSettings = $this->getDacSettings();
         //$class = $targetEntity->getName();
         //$dacFields = $class::getDacFields();

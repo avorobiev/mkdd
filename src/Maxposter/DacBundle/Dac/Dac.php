@@ -18,7 +18,10 @@ class Dac
         $doctrine,
 
         /** @var \Maxposter\DacBundle\Dac\Settings */
-        $settings
+        $settings,
+
+        /** @var \Maxposter\DacBundle\Annotations\Mapping\Service\Annotations */
+        $annotations
     ;
 
 
@@ -30,6 +33,7 @@ class Dac
         $this->doctrine->getManager()->getConfiguration()->addFilter(
             static::SQL_FILTER_NAME, 'Maxposter\\DacBundle\\Dac\\SqlFilter'
         );
+        $this->annotations = $annotations;
     }
 
     public function enable()
@@ -39,7 +43,7 @@ class Dac
         $filters = $this->doctrine->getManager()->getFilters(); /** @var $filters \Doctrine\ORM\Query\FilterCollection */
         $filters->enable(static::SQL_FILTER_NAME);
         $filter = $filters->getFilter(static::SQL_FILTER_NAME); /** @var \Doctrine\ORM\Query\Filter\SQLFilter */
-        $filter->setDacSettings($this->getSettings());
+        $filter->setDacSettings($this->getSettings(), $this->annotations);
     }
 
     public function disable()
