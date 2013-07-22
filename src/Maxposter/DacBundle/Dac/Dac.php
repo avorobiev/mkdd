@@ -43,7 +43,8 @@ class Dac
         $filters = $this->doctrine->getManager()->getFilters(); /** @var $filters \Doctrine\ORM\Query\FilterCollection */
         $filters->enable(static::SQL_FILTER_NAME);
         $filter = $filters->getFilter(static::SQL_FILTER_NAME); /** @var \Doctrine\ORM\Query\Filter\SQLFilter */
-        $filter->setDacSettings($this->getSettings(), $this->annotations);
+        $filter->setDacSettings($this->getSettings());
+        $filter->setAnnotations($this->annotations);
     }
 
     public function disable()

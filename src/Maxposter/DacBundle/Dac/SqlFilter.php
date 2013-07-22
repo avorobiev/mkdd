@@ -14,14 +14,18 @@ class SqlFilter extends \Doctrine\ORM\Query\Filter\SQLFilter
     private
         /** @var Settings */
         $dacSettings,
-        
+
         /** @var \Maxposter\DacBundle\Annotations\Mapping\Service\Annotations */
         $annotations;
 
-    public function setDacSettings(Settings $dacSettings, Annotations $annotations)
+    public function setAnnotations(Annotations $annotations)
+    {
+        $this->annotations = $annotations;
+    }
+
+    public function setDacSettings(Settings $dacSettings)
     {
         $this->dacSettings = $dacSettings;
-        $this->annotations = $annotations;
     }
 
     private function getDacSettings()
