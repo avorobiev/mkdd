@@ -8,6 +8,7 @@
         <parameter key="maxposter.dac.annotations_cache_warmer.class">Maxposter\DacBundle\Annotations\CacheWarmer\AnnotationsCacheWarmer</parameter>
         <parameter key="maxposter.dac.annotation_driver.class">Maxposter\DacBundle\Annotations\Mapping\Driver\Annotations</parameter>
         <parameter key="maxposter.dac.annotations.class">Maxposter\DacBundle\Annotations\Mapping\Service\Annotations</parameter>
+        <parameter key="maxposter.dac.dac.class">Maxposter\DacBundle\Dac\Dac</parameter>
     </parameters>
 
     <services>
@@ -24,6 +25,11 @@
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="maxposter.dac.annotation_driver" />
             <argument>%kernel.cache_dir%</argument>
+        </service>
+
+        <service id="maxposter.dac.dac" class="%maxposter.dac.dac.class%">
+            <argument type="service" id="doctrine" />
+            <argument type="service" id="maxposter.dac.annotations" />
         </service>
     </services>
 </container>

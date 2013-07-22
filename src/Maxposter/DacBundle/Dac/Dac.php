@@ -3,6 +3,7 @@
 namespace Maxposter\DacBundle\Dac;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Maxposter\DacBundle\Annotations\Mapping\Service\Annotations;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 
@@ -21,7 +22,7 @@ class Dac
     ;
 
 
-    public function __construct(Registry $doctrine)
+    public function __construct(Registry $doctrine, Annotations $annotations)
     {
         $this->doctrine = $doctrine;
 

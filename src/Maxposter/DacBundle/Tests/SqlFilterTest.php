@@ -24,7 +24,7 @@ class SqlFilterTest extends WebTestCase
         $dacSettings = new Settings();
         $dacSettings->set(get_class($dacEntity), array(24, 36));
 
-        $dac = new Dac($doctrine);
+        $dac = $client->getContainer()->get('maxposter.dac.dac');
         $dac->setSettings($dacSettings);
         $dac->enable();
 

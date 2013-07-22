@@ -14,7 +14,7 @@ class DepartmentTest extends AppTestCase
         $dacSettings = new Settings();
         $dacSettings->set('Maxposter\\DacTestBundle\\Entity\\Department', array());
 
-        $dac = new Dac($this->container->get('doctrine'));
+        $dac = $this->client->getContainer()->get('maxposter.dac.dac');
         $dac->setSettings($dacSettings);
         $dac->enable();
 
@@ -32,7 +32,7 @@ class DepartmentTest extends AppTestCase
         $dacSettings = new Settings();
         $dacSettings->set('Maxposter\\DacTestBundle\\Entity\\Department', array($department1->getId()));
 
-        $dac = new Dac($this->container->get('doctrine'));
+        $dac = $this->client->getContainer()->get('maxposter.dac.dac');
         $dac->setSettings($dacSettings);
         $dac->enable();
 
@@ -53,7 +53,7 @@ class DepartmentTest extends AppTestCase
         $dacSettings = new Settings();
         $dacSettings->set('Maxposter\\DacTestBundle\\Entity\\Department', $departmentIds);
 
-        $dac = new Dac($this->container->get('doctrine'));
+        $dac = $this->client->getContainer()->get('maxposter.dac.dac');
         $dac->setSettings($dacSettings);
         $dac->enable();
 
@@ -80,7 +80,7 @@ class DepartmentTest extends AppTestCase
             ),
         ));
 
-        $dac = new Dac($this->container->get('doctrine'));
+        $dac = $this->client->getContainer()->get('maxposter.dac.dac');
         $dac->setSettings($dacSettings);
         $dac->enable();
 

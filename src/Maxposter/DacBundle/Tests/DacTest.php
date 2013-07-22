@@ -9,11 +9,10 @@ class DacTest extends WebTestCase
     public function testEnabledAndDisable()
     {
         $client = static::createClient($options = array(), $serverArgs = array());
-        $doctrine = $client->getContainer()->get('doctrine');
-        $em = $doctrine->getManager();
-        $dac = new \Maxposter\DacBundle\Dac\Dac($doctrine);
+        $dac = $client->getContainer()->get('maxposter.dac.dac');
+
         /** @var $filters \Doctrine\ORM\Query\FilterCollection */
-        $filters = $em->getFilters();
+        $filters = $client->getContainer()->get('doctrine')->getManager()->getFilters();
 
         $this->assertArrayNotHasKey(Dac::SQL_FILTER_NAME, $filters->getEnabledFilters(), 'Изначально фильтр объявлен но не включен');
 
