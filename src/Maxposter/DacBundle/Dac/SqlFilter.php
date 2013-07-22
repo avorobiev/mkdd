@@ -45,36 +45,20 @@ class SqlFilter extends \Doctrine\ORM\Query\Filter\SQLFilter
      */
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
     {
-        if (!$this->annotations->hasDacFields($targetEntity->getReflectionClass()->getName())){
+        $entityName = $targetEntity->getReflectionClass()->getName();
+        if (!$this->annotations->hasDacFields($entityName)){
             return '';
         }
 
-        $dacSettings = $this->getDacSettings();
-        //$class = $targetEntity->getName();
-        //$dacFields = $class::getDacFields();
-        $dacFields = $targetEntity->getReflectionClass()->getMethod('getDacFields')->invoke(null);
+        $dacFields = $this->annotations->getDacFields($entityName);
         $conditions = array();
-        foreach ($dacFields as $dacField) {
-            $filteredFieldName = false;
-            // Фильтр по FK
-            if ($targetEntity->hasAssociation($dacField)) {
-                $filteredFieldName = $targetEntity->getSingleAssociationJoinColumnName($dacField);
-                $assocMapping = $targetEntity->getAssociationMapping($dacField);
-                $dacSettingsName = $assocMapping['targetEntity'];
-            } // Фильтруем по самому себе, т.е. PK
-            else if ($targetEntity->getSingleIdentifierColumnName() == $dacField) {
-                $filteredFieldName = $targetEntity->getSingleIdentifierColumnName();
-                $dacSettingsName = $targetEntity->getName();
-            }
-
-            if ((false !== $filteredFieldName) && !is_null($dacSettings->get($dacSettingsName))) {
-                $conditions[] = sprintf(
-                    '%s.%s IN (\'%s\')',
-                    $targetTableAlias,
-                    $filteredFieldName,
-                    implode('\', \'', $dacSettings->get($dacSettingsName))
-                );
-            }
+        foreach ($dacFields as $filteredFieldName => $dacSettingsName) {
+            $conditions[] = sprintf(
+                '%s.%s IN (\'%s\')',
+                $targetTableAlias,
+                $filteredFieldName,
+                implode('\', \'', (array) $this->getDacSettings()->get($dacSettingsName))
+            );
         }
 
         $result = '';
