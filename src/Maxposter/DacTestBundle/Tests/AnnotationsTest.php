@@ -5,7 +5,7 @@ class AnnotationsTest extends AppTestCase
 {
     public function testDacService_HasField()
     {
-        $ann = $this->container->get('max_dac.annotations');
+        $ann = $this->container->get('maxposter.dac.annotations');
 
         $this->assertTrue($ann->hasDacFields('Maxposter\\DacTestBundle\\Entity\\Department'));
     }
@@ -13,7 +13,7 @@ class AnnotationsTest extends AppTestCase
 
     public function testDacService_HasNoField()
     {
-        $ann = $this->container->get('max_dac.annotations');
+        $ann = $this->container->get('maxposter.dac.annotations');
 
         $this->assertFalse($ann->hasDacFields('Maxposter\\DacTestBundle\\Entity\\City'));
     }
@@ -21,7 +21,7 @@ class AnnotationsTest extends AppTestCase
 
     public function testDacService_GetFields()
     {
-        $ann = $this->container->get('max_dac.annotations');
+        $ann = $this->container->get('maxposter.dac.annotations');
 
         $this->assertEquals(
             array(

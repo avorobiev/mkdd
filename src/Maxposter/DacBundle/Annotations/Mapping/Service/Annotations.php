@@ -36,7 +36,7 @@ class Annotations
      */
     private function load()
     {
-        if (!$this->map && (null !== $this->cacheDir) && is_file($filePath = sprintf('%s/max_dac.annotations.cache', $this->cacheDir))) {
+        if (!$this->map && (null !== $this->cacheDir) && is_file($filePath = sprintf('%s/maxposter.dac.annotations.cache', $this->cacheDir))) {
             $this->map = (array) unserialize(file_get_contents($filePath));
         } elseif (!$this->map) {
             $this->map = array();

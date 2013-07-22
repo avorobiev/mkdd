@@ -6,11 +6,11 @@
 
     <!--
     <parameters>
-        <parameter key="maxposter_dac_test.example.class">Maxposter\DacTestBundle\Example</parameter>
+        <parameter key="maxposter.dac_test.example.class">Maxposter\DacTestBundle\Example</parameter>
     </parameters>
 
     <services>
-        <service id="maxposter_dac_test.example" class="%maxposter_dac_test.example.class%">
+        <service id="maxposter.dac_test.example" class="%maxposter.dac_test.example.class%">
             <argument type="service" id="service_id" />
             <argument>plain_value</argument>
             <argument>%parameter_name%</argument>

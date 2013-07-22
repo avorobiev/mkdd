@@ -18,7 +18,7 @@ class AnnotationsCacheWarmer extends CacheWarmer
     {
         // FIXME: как папочку создать? дурдом
         $this->writeCacheFile(
-            sprintf('%s/max_dac.annotations.cache', $cacheDir),
+            sprintf('%s/maxposter.dac.annotations.cache', $cacheDir),
             serialize($this->annotations->getAnnotationsMap())
         );
     }
