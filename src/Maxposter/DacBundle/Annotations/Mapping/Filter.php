@@ -1,5 +1,5 @@
 <?php
-namespace Maxposter\DacBundle\Mapping;
+namespace Maxposter\DacBundle\Annotations\Mapping;
 
 use Doctrine\ORM\Mapping\Annotation;
 

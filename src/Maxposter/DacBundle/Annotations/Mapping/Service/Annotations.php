@@ -1,14 +1,14 @@
 <?php
-namespace Maxposter\DacBundle\Mapping\Service;
+namespace Maxposter\DacBundle\Annotations\Mapping\Service;
 
 use Doctrine\ORM\EntityManager;
-use Maxposter\DacBundle\Mapping\Driver\Annotations as Driver;
+use Maxposter\DacBundle\Annotations\Mapping\Driver\Annotations as Driver;
 
 class Annotations
 {
     /** @var \Doctrine\ORM\EntityManager  */
     private $em;
-    /** @var \Maxposter\DacBundle\Mapping\Driver\Annotations  */
+    /** @var \Maxposter\DacBundle\Annotations\Mapping\Driver\Annotations  */
     private $driver;
     /** @var string  */
     private $cacheDir;

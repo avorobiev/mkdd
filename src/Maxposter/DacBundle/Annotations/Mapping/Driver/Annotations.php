@@ -1,5 +1,5 @@
 <?php
-namespace Maxposter\DacBundle\Mapping\Driver;
+namespace Maxposter\DacBundle\Annotations\Mapping\Driver;
 
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\EntityManager;
@@ -24,10 +24,10 @@ class Annotations
         $result = array();
         /** @var  $prop  \ReflectionProperty */
         foreach ($props as $prop) {
-            /** @var  $annotation  \Maxposter\DacBundle\Mapping\Filter */
+            /** @var  $annotation  \Maxposter\DacBundle\Annotations\Mapping\Filter */
             $annotation = $this->reader->getPropertyAnnotation(
                 $prop,
-                'Maxposter\DacBundle\Mapping\Filter'
+                'Maxposter\DacBundle\Annotations\Mapping\Filter'
             );
             if (null !== $annotation) {
                 // Если не задано значение

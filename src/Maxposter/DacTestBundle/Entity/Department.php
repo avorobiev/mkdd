@@ -2,7 +2,7 @@
 namespace Maxposter\DacTestBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Maxposter\DacBundle\Mapping as DAC;
+use Maxposter\DacBundle\Annotations\Mapping as DAC;
 
 /**
  * Подразделение автосалона
