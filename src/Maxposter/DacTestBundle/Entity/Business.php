@@ -37,7 +37,7 @@ class Business
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="Dealer", mappedBy="business")
+     * @ORM\OneToMany(targetEntity="Company", mappedBy="business")
      */
     private $companies;
 

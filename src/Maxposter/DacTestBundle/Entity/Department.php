@@ -29,7 +29,8 @@ class Department implements \Maxposter\DacBundle\Entity\DacInterface
 
     /**
      * @var Dealer
-     * @ORM\ManyToOne(targetEntity="Dealer")
+     * @ORM\ManyToOne(targetEntity="Dealer", inversedBy="departments")
+     * @ORM\JoinColumn(name="dealer_id", referencedColumnName="id")
      * @DAC\Filter(targetEntity="Dealer")
      */
     private $dealer;

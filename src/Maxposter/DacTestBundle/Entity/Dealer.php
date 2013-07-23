@@ -28,13 +28,13 @@ class Dealer
 
     /**
      * @var Business
-     * @ORM\ManyToOne(targetEntity="Business")
+     * @ORM\ManyToOne(targetEntity="Business", inversedBy="dealers")
      */
     private $business;
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="Department", mappedBy="dealers")
+     * @ORM\OneToMany(targetEntity="Department", mappedBy="dealer")
      */
     private $departments;
 

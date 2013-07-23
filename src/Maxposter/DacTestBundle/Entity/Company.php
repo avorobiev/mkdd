@@ -28,7 +28,7 @@ class Company
 
     /**
      * @var Business
-     * @ORM\ManyToOne(targetEntity="Business")
+     * @ORM\ManyToOne(targetEntity="Business", inversedBy="companies")
      */
     private $business;
 
