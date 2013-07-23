@@ -4,6 +4,7 @@ namespace Maxposter\DacBundle\Dac;
 use \Doctrine\ORM\Mapping\ClassMetadata;
 use \Doctrine\DBAL\Connection;
 use Maxposter\DacBundle\Annotations\Mapping\Service\Annotations;
+use Maxposter\DacBundle\Exceptions\DacMappingException;
 
 /**
  * @package Maxposter\DacBundle\SqlFilter
@@ -16,7 +17,10 @@ class SqlFilter extends \Doctrine\ORM\Query\Filter\SQLFilter
         $dacSettings,
 
         /** @var \Maxposter\DacBundle\Annotations\Mapping\Service\Annotations */
-        $annotations;
+        $annotations,
+
+        /** @var \Doctrine\ORM\Mapping\ClassMetadata */
+        $targetEntity;
 
     public function setAnnotations(Annotations $annotations)
     {
@@ -28,44 +32,68 @@ class SqlFilter extends \Doctrine\ORM\Query\Filter\SQLFilter
         $this->dacSettings = $dacSettings;
     }
 
-    private function getDacSettings()
-    {
-        if (is_null($this->dacSettings)) {
-            throw new Exception('Ошибка в инициализации SQL-фильтра: не заданы параметры фильтрации');
-        }
-        return $this->dacSettings;
-    }
-
     /**
      * Gets the SQL query part to add to a query.
      *
-     * @param  \Doctrine\ORM\Mapping\ClassMetadata  $targetEntity
-     * @param  string  $targetTableAlias
+     * @param  \Doctrine\ORM\Mapping\ClassMetadata $targetEntity
+     * @param  string $targetTableAlias
      * @return string The constraint SQL if there is available, empty string otherwise
      */
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
     {
         $entityName = $targetEntity->getReflectionClass()->getName();
-        if (!$this->annotations->hasDacFields($entityName)){
+        $this->targetEntity = $targetEntity;
+
+        if (!$this->annotations->hasDacFields($entityName)) {
             return '';
         }
 
         $dacFields = $this->annotations->getDacFields($entityName);
         $conditions = array();
         foreach ($dacFields as $filteredFieldName => $dacSettingsName) {
+            $filteredColumnName = $this->getColumnNameByField($filteredFieldName);
             $conditions[] = sprintf(
                 '%s.%s IN (\'%s\')',
                 $targetTableAlias,
-                $filteredFieldName,
-                implode('\', \'', (array) $this->getDacSettings()->get($dacSettingsName))
+                $filteredColumnName,
+                implode('\', \'', (array)$this->getDacSettings()->get($dacSettingsName))
             );
         }
 
-        $result = '';
         if ($conditions) {
             $result = sprintf('((%s))', implode(') OR (', $conditions));
+        } else {
+            $result = sprintf('((%s))', '1=2');
         }
 
         return $result;
+    }
+
+    private function getDacSettings()
+    {
+        if (is_null($this->dacSettings)) {
+            throw new Exception('Ошибка в инициализации SQL-фильтра: не заданы параметры фильтрации');
+        }
+
+        return $this->dacSettings;
+    }
+
+    private function getColumnNameByField($fieldName)
+    {
+        if (in_array($fieldName, $this->targetEntity->getFieldNames())) {
+            $columnNames = $this->targetEntity->columnNames;
+            $columnName = $columnNames[$fieldName];
+        } elseif (in_array($fieldName, $this->targetEntity->getAssociationNames())) {
+            $associationMappings = $this->targetEntity->associationMappings;
+
+            if (count($associationMappings[$fieldName]['joinColumnFieldNames']) !== 1) {
+                throw new DacMappingException();
+            }
+            $columnName = array_pop($associationMappings[$fieldName]['joinColumnFieldNames']);
+        } else {
+            throw new DacMappingException("ClassMetadata не содержит информацию о названии столбца в таблице для свойства " . $fieldName);
+        }
+
+        return $columnName;
     }
 }

@@ -10,7 +10,7 @@ use Maxposter\DacBundle\Annotations\Mapping as DAC;
  * @ORM\Entity()
  * @ORM\Table(name="test_dac_department")
  */
-class Department implements \Maxposter\DacBundle\Entity\DacInterface
+class Department
 {
     /**
      * @var integer
@@ -28,9 +28,15 @@ class Department implements \Maxposter\DacBundle\Entity\DacInterface
     private $name;
 
     /**
+     * @var string
+     * @ORM\Column(name="alternative_name", type="string", length=50, nullable=true)
+     */
+    private $alternativeName;
+
+    /**
      * @var Dealer
      * @ORM\ManyToOne(targetEntity="Dealer", inversedBy="departments")
-     * @ORM\JoinColumn(name="dealer_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="dealer_dac", referencedColumnName="id")
      * @DAC\Filter(targetEntity="Dealer")
      */
     private $dealer;
@@ -91,12 +97,21 @@ class Department implements \Maxposter\DacBundle\Entity\DacInterface
         return $this->dealer;
     }
 
-
-    public static function getDacFields()
+    /**
+     * @param string $alternativeName
+     */
+    public function setAlternativeName($alternativeName)
     {
-        return array(
-            'id',
-            'dealer',
-        );
+        $this->alternativeName = $alternativeName;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAlternativeName()
+    {
+        return $this->alternativeName;
     }
 }

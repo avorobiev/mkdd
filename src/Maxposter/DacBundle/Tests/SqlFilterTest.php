@@ -41,6 +41,8 @@ class SqlFilterTest extends WebTestCase
         $meta = new \Doctrine\ORM\Mapping\ClassMetadata(get_class($dacEntity), $em->getConfiguration()->getNamingStrategy());
         $meta->initializeReflection(new \Doctrine\Common\Persistence\Mapping\RuntimeReflectionService());
         $meta->identifier[0] = 'id';
+        $meta->columnNames = array('id'=>'id');
+        $meta->fieldMappings = array('id'=>'id');
 
         $this->assertEquals('((a_.id IN (\'24\', \'36\')))', $filter->addFilterConstraint($meta, 'a_'));
     }
