@@ -52,18 +52,22 @@ class SqlFilter extends \Doctrine\ORM\Query\Filter\SQLFilter
         $conditions = array();
         foreach ($dacFields as $filteredFieldName => $dacSettingsName) {
             $filteredColumnName = $this->getColumnNameByField($filteredFieldName);
-            $conditions[] = sprintf(
-                '%s.%s IN (\'%s\')',
-                $targetTableAlias,
-                $filteredColumnName,
-                implode('\', \'', (array)$this->getDacSettings()->get($dacSettingsName))
-            );
+            $dacSettings= $this->getDacSettings()->get($dacSettingsName);
+            if ($dacSettings)
+            {
+                $conditions[] = sprintf(
+                    '%s.%s IN (\'%s\')',
+                    $targetTableAlias,
+                    $filteredColumnName,
+                    implode('\', \'', (array)$dacSettings)
+                );
+            }
         }
 
         if ($conditions) {
             $result = sprintf('((%s))', implode(') OR (', $conditions));
         } else {
-            $result = sprintf('((%s))', '1=2');
+            $result = sprintf('%s', '1=2');
         }
 
         return $result;

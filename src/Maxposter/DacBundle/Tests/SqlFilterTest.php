@@ -46,4 +46,41 @@ class SqlFilterTest extends WebTestCase
 
         $this->assertEquals('((a_.id IN (\'24\', \'36\')))', $filter->addFilterConstraint($meta, 'a_'));
     }
+
+    /**
+     * Если
+     */
+    public function testAddFilterConstraint1()
+    {
+        $client = static::createClient($options = array(), $serverArgs = array());
+        $doctrine = $client->getContainer()->get('doctrine');
+        $em = $doctrine->getManager();
+
+        $dacEntity = $this->getMock('\stdClass');
+
+        $dacAnnotations = $this->getMock('\Maxposter\DacBundle\Annotations\Mapping\Service\Annotations', array('hasDacFields', 'getDacFields'), array(), '', false);
+        $dacAnnotations->expects($this->any())
+            ->method('hasDacFields')
+            ->will($this->returnValue(true));
+        $dacAnnotations->expects($this->any())
+            ->method('getDacFields')
+            ->will($this->returnValue(array(
+                        'id' => get_class($dacEntity)
+                    )));
+
+        $dac = $client->getContainer()->get('maxposter.dac.dac');
+        $dac->enable();
+
+        /** @var $filters \Doctrine\ORM\Query\FilterCollection */
+        $filter = $em->getFilters()->getFilter(Dac::SQL_FILTER_NAME);
+        $filter->setAnnotations($dacAnnotations);
+
+        $meta = new \Doctrine\ORM\Mapping\ClassMetadata(get_class($dacEntity), $em->getConfiguration()->getNamingStrategy());
+        $meta->initializeReflection(new \Doctrine\Common\Persistence\Mapping\RuntimeReflectionService());
+        $meta->identifier[0] = 'id';
+        $meta->columnNames = array('id'=>'id');
+        $meta->fieldMappings = array('id'=>'id');
+
+        $this->assertEquals('1=2', $filter->addFilterConstraint($meta, 'a_'));
+    }
 }
