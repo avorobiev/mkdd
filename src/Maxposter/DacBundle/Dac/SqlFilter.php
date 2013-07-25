@@ -36,7 +36,7 @@ class SqlFilter extends \Doctrine\ORM\Query\Filter\SQLFilter
      * @throws Exception
      * fixme: Нужен тест
      */
-    private function getAnnotation()
+    public function getAnnotation()
     {
         if (is_null($this->annotations)) {
             throw new Exception('Ошибка в инициализации SQL-фильтра: не задан объект с аннотациями.', Exception::ERR_SQL_FILTER);
@@ -62,7 +62,7 @@ class SqlFilter extends \Doctrine\ORM\Query\Filter\SQLFilter
      * @throws Exception
      * fixme: Нужен тест
      */
-    private function getDacSettings()
+    public function getDacSettings()
     {
         if (is_null($this->dacSettings)) {
             throw new Exception('Ошибка в инициализации SQL-фильтра: не заданы параметры фильтрации.', Exception::ERR_SQL_FILTER);
