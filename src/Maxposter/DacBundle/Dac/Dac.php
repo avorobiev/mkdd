@@ -42,7 +42,7 @@ class Dac
         // Включение SQL-фильтра
         $filters = $this->doctrine->getManager()->getFilters(); /** @var $filters \Doctrine\ORM\Query\FilterCollection */
         $filters->enable(static::SQL_FILTER_NAME);
-        $filter = $filters->getFilter(static::SQL_FILTER_NAME); /** @var \Doctrine\ORM\Query\Filter\SQLFilter */
+        $filter = $filters->getFilter(static::SQL_FILTER_NAME); /** @var $filter \Doctrine\ORM\Query\Filter\SQLFilter */
         $filter->setDacSettings($this->getSettings());
         $filter->setAnnotations($this->annotations);
     }

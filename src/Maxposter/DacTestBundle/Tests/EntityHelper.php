@@ -218,7 +218,7 @@ class EntityHelper
 
     /**
      * @param array $props
-     * @return \Maxposter\DacDoctrineTestBundle\Entity\Department
+     * @return \Maxposter\DacTestBundle\Entity\Department
      */
     public function makeDepartment(array $props = array())
     {

@@ -91,9 +91,8 @@ class SqlFilter extends \Doctrine\ORM\Query\Filter\SQLFilter
         $conditions = array();
         foreach ($dacFields as $filteredFieldName => $dacSettingsName) {
             $filteredColumnName = $this->getColumnName($filteredFieldName, $targetEntity);
-            $dacSettingsValue= $this->getDacSettings()->get($dacSettingsName);
-            if ($dacSettingsValue)
-            {
+            $dacSettingsValue   = $this->getDacSettings()->get($dacSettingsName);
+            if ($dacSettingsValue) {
                 $conditions[] = sprintf(
                     '%s.%s IN (\'%s\')',
                     $targetTableAlias,
