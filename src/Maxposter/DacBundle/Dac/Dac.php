@@ -17,6 +17,9 @@ class Dac
         /* @var \Doctrine\Bundle\DoctrineBundle\Registry */
         $doctrine,
 
+        /** \Maxposter\DacBundle\Dac\EventSubscriber */
+        $eventSubscriber,
+
         /** @var \Maxposter\DacBundle\Dac\Settings */
         $settings,
 
@@ -25,9 +28,10 @@ class Dac
     ;
 
 
-    public function __construct(Registry $doctrine, Annotations $annotations)
+    public function __construct(Registry $doctrine, EventSubscriber $eventSubscriber, Annotations $annotations)
     {
         $this->doctrine = $doctrine;
+        $this->eventSubscriber = $eventSubscriber;
 
         // Регистрация sql-фильтра, чтобы в коде можно было ссылаться на его имя
         $this->doctrine->getManager()->getConfiguration()->addFilter(
@@ -45,12 +49,21 @@ class Dac
         $filter = $filters->getFilter(static::SQL_FILTER_NAME); /** @var $filter \Doctrine\ORM\Query\Filter\SQLFilter */
         $filter->setDacSettings($this->getSettings());
         $filter->setAnnotations($this->annotations);
+
+        $this->eventSubscriber->setDacSettings($this->getSettings());
+        /** @var \Doctrine\Common\EventManager $evm */
+        $evm = $this->doctrine->getManager()->getEventManager();
+        $evm->addEventSubscriber($this->eventSubscriber);
     }
 
     public function disable()
     {
         // todo: Выключаться должны и SqlFilter и DoctrineListener за раз
         $this->doctrine->getManager()->getFilters()->disable(static::SQL_FILTER_NAME);
+
+        /** @var \Doctrine\Common\EventManager $evm */
+        $evm = $this->doctrine->getManager()->getEventManager();
+        $evm->removeEventSubscriber($this->eventSubscriber);
     }
 
     public function setSettings(Settings $settings)

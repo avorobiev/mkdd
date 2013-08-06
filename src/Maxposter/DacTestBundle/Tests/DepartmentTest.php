@@ -391,4 +391,61 @@ class DepartmentTest extends AppTestCase
         $this->assertEquals($sRes[0]->getId(), $department2->getId(), 'Идентификатор первой записи');
     }
 
+
+    /**
+     * Пользователь без прав
+     *
+     * @test
+     */
+    public function testInsert_UserWithoutDealer()
+    {
+        $dacSettings = new Settings();
+        $dacSettings->setSettings(array(
+            'Maxposter\\DacTestBundle\\Entity\\Dealer'     => array(),
+        ));
+
+        $dac = $this->client->getContainer()->get('maxposter.dac.dac');
+        $dac->setSettings($dacSettings);
+        $dac->enable();
+        $this->em->clear();
+
+        $dep1 = new \Maxposter\DacTestBundle\Entity\Department();
+        $dep1->setName('Dep');
+        $this->em->persist($dep1);
+
+        $this->setExpectedException('\\Maxposter\\DacBundle\\Dac\\Exception', 'Невозможно получить единственно верное значение');
+        $this->em->flush();
+    }
+
+
+    /**
+     * Один автосалон
+     *
+     * @test
+     */
+    public function testInsert_UserWithDealer()
+    {
+        $dealer1 = $this->helper->makeDealer();
+        $dealer2 = $this->helper->makeDealer();
+        $dacSettings = new Settings();
+        $dacSettings->setSettings(array(
+            'Maxposter\\DacTestBundle\\Entity\\Dealer' => array($dealer2->getId()),
+        ));
+
+        $dac = $this->client->getContainer()->get('maxposter.dac.dac');
+        $dac->setSettings($dacSettings);
+        $dac->enable();
+        $this->em->clear();
+
+        $dep1 = new \Maxposter\DacTestBundle\Entity\Department();
+        $dep1->setName('Dep');
+        $this->em->persist($dep1);
+        $this->em->flush();
+
+        $this->em->clear();
+        $res = $this->em->createQuery('SELECT d FROM MaxposterDacTestBundle:Department d')->getResult();
+        $this->assertEquals(1, count($res));
+        $this->assertEquals($dealer2->getId(), $res[0]->getDealer()->getId());
+    }
+
 }

@@ -8,6 +8,7 @@
         <parameter key="maxposter.dac.annotations_cache_warmer.class">Maxposter\DacBundle\Annotations\CacheWarmer\AnnotationsCacheWarmer</parameter>
         <parameter key="maxposter.dac.annotation_driver.class">Maxposter\DacBundle\Annotations\Mapping\Driver\Annotations</parameter>
         <parameter key="maxposter.dac.annotations.class">Maxposter\DacBundle\Annotations\Mapping\Service\Annotations</parameter>
+        <parameter key="maxposter.dac.event_subscriber.class">Maxposter\DacBundle\Dac\EventSubscriber</parameter>
         <parameter key="maxposter.dac.dac.class">Maxposter\DacBundle\Dac\Dac</parameter>
     </parameters>
 
@@ -27,8 +28,14 @@
             <argument>%kernel.cache_dir%</argument>
         </service>
 
+        <service id="maxposter.dac.event_subscriber" class="%maxposter.dac.event_subscriber.class%">
+            <argument type="service" id="maxposter.dac.annotations" />
+            <tag name="doctrine.event_subscriber" connection="default" />
+        </service>
+
         <service id="maxposter.dac.dac" class="%maxposter.dac.dac.class%">
             <argument type="service" id="doctrine" />
+            <argument type="service" id="maxposter.dac.event_subscriber" />
             <argument type="service" id="maxposter.dac.annotations" />
         </service>
     </services>
