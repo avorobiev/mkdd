@@ -2,6 +2,7 @@
 namespace Maxposter\DacTestBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Maxposter\DacBundle\Annotations\Mapping as DAC;
 
 /**
  * Доп.инфо о юр.лице
@@ -21,7 +22,8 @@ class CompanyInfo
 
     /**
      * @var integer
-     * @Orm\OneToOne(targetEntity="Company", inversedBy="info")
+     * @ORM\OneToOne(targetEntity="Company", inversedBy="info")
+     * @DAC\Filter()
      */
     private $company;
 

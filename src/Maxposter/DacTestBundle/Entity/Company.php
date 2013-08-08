@@ -3,6 +3,7 @@ namespace Maxposter\DacTestBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Maxposter\DacBundle\Annotations\Mapping as DAC;
 
 /**
  * Юр.лицо
@@ -17,6 +18,7 @@ class Company
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @DAC\Filter
      */
     private $id;
 
@@ -29,6 +31,7 @@ class Company
     /**
      * @var Business
      * @ORM\ManyToOne(targetEntity="Business", inversedBy="companies")
+     * @DAC\Filter
      */
     private $business;
 

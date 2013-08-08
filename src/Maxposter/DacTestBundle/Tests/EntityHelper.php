@@ -5,6 +5,7 @@ use Doctrine\ORM\EntityManager;
 
 use Maxposter\DacTestBundle\Entity\Business;
 use Maxposter\DacTestBundle\Entity\Dealer;
+use Maxposter\DacTestBundle\Entity\Company;
 
 class EntityHelper
 {
@@ -110,7 +111,7 @@ class EntityHelper
                     }
                 } elseif (
                     ($mapping['type'] & \Doctrine\ORM\Mapping\ClassMetadataInfo::TO_ONE)
-                    && (false === $mapping['joinColumns']['0']['nullable'])
+                    && ($mapping['joinColumns'] && false === $mapping['joinColumns']['0']['nullable'])
                 ) {
                     $meta->getReflectionProperty($field)->setValue($ob, $this->getDefault($mapping['targetEntity']));
                 }
@@ -138,7 +139,10 @@ class EntityHelper
                     // Значение по умолчанию
                 } elseif (
                     ($mapping['type'] & \Doctrine\ORM\Mapping\ClassMetadataInfo::TO_ONE)
-                    && (false === $mapping['joinColumns']['0']['nullable'])
+                    && (
+                        ($mapping['joinColumns'] && false === $mapping['joinColumns']['0']['nullable'])
+                        or ($mapping['isOwningSide'] && !$mapping['joinColumns'])
+                    )
                 ) {
                     $meta->getReflectionProperty($field)->setValue($ob, $this->getDefault($mapping['targetEntity']));
                 }
@@ -231,6 +235,52 @@ class EntityHelper
         }
 
         $ob = $this->fromArray($props, 'Department');
+
+        $this->em->persist($ob);
+        $this->em->flush();
+
+        return $ob;
+    }
+
+
+    /**
+     * @param array $props
+     * @return \Maxposter\DacTestBundle\Entity\Company
+     */
+    public function makeCompany(array $props = array())
+    {
+        $props = array_merge(array(
+            'name' => sprintf('company-%d', $this->getUniqueCounter()),
+        ), $props);
+
+        if (empty($props['Business']) || !($props['Business'] instanceof Business)) {
+            $props['Business'] = $this->getDefault('Business');
+        }
+
+        $ob = $this->fromArray($props, 'Company');
+
+        $this->em->persist($ob);
+        $this->em->flush();
+
+        return $ob;
+    }
+
+
+    /**
+     * @param array $props
+     * @return \Maxposter\DacTestBundle\Entity\CompanyInfo
+     */
+    public function makeCompanyInfo(array $props = array())
+    {
+        $props = array_merge(array(
+            'data' => sprintf('company info data %d', $this->getUniqueCounter()),
+        ), $props);
+
+        if (empty($props['Company']) || !($props['Company'] instanceof Company)) {
+            $props['Company'] = $this->getDefault('Company');
+        }
+
+        $ob = $this->fromArray($props, 'CompanyInfo');
 
         $this->em->persist($ob);
         $this->em->flush();

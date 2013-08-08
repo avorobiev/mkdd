@@ -423,7 +423,7 @@ class DepartmentTest extends AppTestCase
      *
      * @test
      */
-    public function testInsert_UserWithDealer()
+    public function testInsert_UserWithDealerFromSettings()
     {
         $dealer1 = $this->helper->makeDealer();
         $dealer2 = $this->helper->makeDealer();
@@ -442,7 +442,40 @@ class DepartmentTest extends AppTestCase
         $this->em->persist($dep1);
         $this->em->flush();
 
-        $this->em->clear();
+        $this->em->clear();$dac->disable();
+        $res = $this->em->createQuery('SELECT d FROM MaxposterDacTestBundle:Department d')->getResult();
+        $this->assertEquals(1, count($res));
+        $this->assertEquals($dealer2->getId(), $res[0]->getDealer()->getId());
+    }
+
+
+    /**
+     * Один автосалон
+     *
+     * @test
+     */
+    public function testInsert_UserWithDealerDefined()
+    {
+        $dealer1 = $this->helper->makeDealer();
+        $dealer2 = $this->helper->makeDealer();
+        $dacSettings = new Settings();
+        $dacSettings->setSettings(array(
+            'Maxposter\\DacTestBundle\\Entity\\Dealer' => array($dealer2->getId()),
+        ));
+
+        $dac = $this->client->getContainer()->get('maxposter.dac.dac');
+        $dac->setSettings($dacSettings);
+        $dac->enable();
+        // FIXME:
+        // $this->em->clear();
+
+        $dep1 = new \Maxposter\DacTestBundle\Entity\Department();
+        $dep1->setName('Dep');
+        $dep1->setDealer($dealer2);
+        $this->em->persist($dep1);
+        $this->em->flush();
+
+        $this->em->clear();$dac->disable();
         $res = $this->em->createQuery('SELECT d FROM MaxposterDacTestBundle:Department d')->getResult();
         $this->assertEquals(1, count($res));
         $this->assertEquals($dealer2->getId(), $res[0]->getDealer()->getId());
