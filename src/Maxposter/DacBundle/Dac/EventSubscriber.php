@@ -25,7 +25,7 @@ class EventSubscriber implements EventSubscriberInterface
     /** @var \Maxposter\DacBundle\Annotations\Mapping\Service\Annotations */
     private $annotations;
     /** @var \Maxposter\DacBundle\Dac\Settings */
-    private $settings;
+    private $dacSettings;
     /** @var \Doctrine\ORM\EntityManager */
     private $em;
 
@@ -48,7 +48,7 @@ class EventSubscriber implements EventSubscriberInterface
      */
     public function setDacSettings(Settings $settings)
     {
-        $this->settings = $settings;
+        $this->dacSettings = $settings;
     }
 
 
@@ -56,10 +56,15 @@ class EventSubscriber implements EventSubscriberInterface
      * Настройки
      *
      * @return \Maxposter\DacBundle\Dac\Settings
+     * @throws Exception
      */
     private function getDacSettings()
     {
-        return $this->settings;
+        if (is_null($this->dacSettings)) {
+            throw new Exception('Ошибка в инициализации SQL-фильтра: не заданы параметры фильтрации.', Exception::ERR_SQL_FILTER);
+        }
+
+        return $this->dacSettings;
     }
 
 
